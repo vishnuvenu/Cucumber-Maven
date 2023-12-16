@@ -1,5 +1,5 @@
 Feature:  this is feature1
-  @smokeTest
+  @smokeTest11
   Scenario: this is test scenario 1
 
     Given  2 integer no
