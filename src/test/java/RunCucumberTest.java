@@ -15,13 +15,13 @@ import java.util.List;
 @CucumberOptions(
         tags= "@smokeTest or @smokeTest1",
         features="src\\main\\resources",
-        glue = "steps",
+        glue = {"steps","hooks"},
         plugin = {
                 "pretty",
-                "html:target/cucumber-reports/cucumber-reports.html",
-                "json:target/cucumber-reports/cucumber.json"
+                "html:target/cucumber-reports-testng/cucumber-reports.html",
+                "json:target/cucumber-reports-testng/cucumber.json"
         },
-        monochrome = true
+        monochrome = false
 
 )
 public class RunCucumberTest extends AbstractTestNGCucumberTests {
@@ -33,22 +33,26 @@ public class RunCucumberTest extends AbstractTestNGCucumberTests {
     @AfterClass
     public void afterMethod(){
         System.out.println("after this suite");
-        generateReport();
+
 
     }
-    @DataProvider(parallel = false)
+    @AfterSuite
+    public void afterSuite(){
+        generateReport();
+    }
+    @DataProvider(parallel = true)
     public Object[][] scenarios() {
         return super.scenarios();
     }
 
 
     private void generateReport() {
-        Configuration configuration = new Configuration(new File("target/cucumber-reports"), "Suite name");
+        Configuration configuration = new Configuration(new File("target/cucumber-reports-testng"), "Suite name");
         configuration.setSortingMethod(SortingMethod.NATURAL);
         configuration.addPresentationModes(PresentationMode.EXPAND_ALL_STEPS);
         configuration.setBuildNumber("1");
         List<String> jsonFiles = new ArrayList<>();
-        jsonFiles.add("target/cucumber-reports/cucumber.json");
+        jsonFiles.add("target/cucumber-reports-testng/cucumber.json");
         ReportBuilder reportBuilder = new ReportBuilder(jsonFiles, configuration);
         reportBuilder.generateReports();
 
